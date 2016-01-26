@@ -1,7 +1,13 @@
 /*************************************************** 
-  This is a library for the Adafruit RGB 16x2 LCD Shield 
+  This is a library for the SunFounder LCD KeyPad Shield with RGB Led
+  (monochrome LCD, 5 buttons keypad and RGB led).
+  
+  Based on:
+  https://github.com/adafruit/Adafruit-RGB-LCD-Shield-Library
+  
+  Adafruit RGB 16x2 LCD Shield 
   Pick one up at the Adafruit shop!
-  ---------> http://http://www.adafruit.com/products/714
+  ---------> http://http://www.adafruit.com/products/714 )
 
   The shield uses I2C to communicate, 2 pins are required to  
   interface
@@ -14,7 +20,7 @@
  ****************************************************/
 
 
-#include "Adafruit_RGBLCDShield.h"
+#include "SunFounder_RGBLCDShield.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -51,7 +57,7 @@
 // can't assume that its in that state when a sketch starts (and the
 // RGBLCDShield constructor is called).
 
-Adafruit_RGBLCDShield::Adafruit_RGBLCDShield() {
+SunFounder_RGBLCDShield::SunFounder_RGBLCDShield() {
   _i2cAddr = 0;
 
   _displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
@@ -76,7 +82,7 @@ Adafruit_RGBLCDShield::Adafruit_RGBLCDShield() {
 
 
 
-void Adafruit_RGBLCDShield::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
+void SunFounder_RGBLCDShield::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
 			 uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
 			 uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
 {
@@ -111,16 +117,21 @@ void Adafruit_RGBLCDShield::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, ui
   begin(16, 1);  
 }
 
-void Adafruit_RGBLCDShield::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
+void SunFounder_RGBLCDShield::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   // check if i2c
   if (_i2cAddr != 255) {
     //_i2c.begin(_i2cAddr);
     WIRE.begin();
     _i2c.begin();
 
+	// RGB led controll
     _i2c.pinMode(8, OUTPUT);
     _i2c.pinMode(6, OUTPUT);
     _i2c.pinMode(7, OUTPUT);
+
+	// backlight controll
+	_i2c.pinMode(5, OUTPUT);
+
     setBacklight(0x7);
 
     if (_rw_pin)
@@ -212,19 +223,19 @@ void Adafruit_RGBLCDShield::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) 
 }
 
 /********** high level commands, for the user! */
-void Adafruit_RGBLCDShield::clear()
+void SunFounder_RGBLCDShield::clear()
 {
   command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
   delayMicroseconds(2000);  // this command takes a long time!
 }
 
-void Adafruit_RGBLCDShield::home()
+void SunFounder_RGBLCDShield::home()
 {
   command(LCD_RETURNHOME);  // set cursor position to zero
   delayMicroseconds(2000);  // this command takes a long time!
 }
 
-void Adafruit_RGBLCDShield::setCursor(uint8_t col, uint8_t row)
+void SunFounder_RGBLCDShield::setCursor(uint8_t col, uint8_t row)
 {
   int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
   if ( row > _numlines ) {
@@ -235,70 +246,70 @@ void Adafruit_RGBLCDShield::setCursor(uint8_t col, uint8_t row)
 }
 
 // Turn the display on/off (quickly)
-void Adafruit_RGBLCDShield::noDisplay() {
+void SunFounder_RGBLCDShield::noDisplay() {
   _displaycontrol &= ~LCD_DISPLAYON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
-void Adafruit_RGBLCDShield::display() {
+void SunFounder_RGBLCDShield::display() {
   _displaycontrol |= LCD_DISPLAYON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turns the underline cursor on/off
-void Adafruit_RGBLCDShield::noCursor() {
+void SunFounder_RGBLCDShield::noCursor() {
   _displaycontrol &= ~LCD_CURSORON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
-void Adafruit_RGBLCDShield::cursor() {
+void SunFounder_RGBLCDShield::cursor() {
   _displaycontrol |= LCD_CURSORON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // Turn on and off the blinking cursor
-void Adafruit_RGBLCDShield::noBlink() {
+void SunFounder_RGBLCDShield::noBlink() {
   _displaycontrol &= ~LCD_BLINKON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
-void Adafruit_RGBLCDShield::blink() {
+void SunFounder_RGBLCDShield::blink() {
   _displaycontrol |= LCD_BLINKON;
   command(LCD_DISPLAYCONTROL | _displaycontrol);
 }
 
 // These commands scroll the display without changing the RAM
-void Adafruit_RGBLCDShield::scrollDisplayLeft(void) {
+void SunFounder_RGBLCDShield::scrollDisplayLeft(void) {
   command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
-void Adafruit_RGBLCDShield::scrollDisplayRight(void) {
+void SunFounder_RGBLCDShield::scrollDisplayRight(void) {
   command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
-void Adafruit_RGBLCDShield::leftToRight(void) {
+void SunFounder_RGBLCDShield::leftToRight(void) {
   _displaymode |= LCD_ENTRYLEFT;
   command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This is for text that flows Right to Left
-void Adafruit_RGBLCDShield::rightToLeft(void) {
+void SunFounder_RGBLCDShield::rightToLeft(void) {
   _displaymode &= ~LCD_ENTRYLEFT;
   command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'right justify' text from the cursor
-void Adafruit_RGBLCDShield::autoscroll(void) {
+void SunFounder_RGBLCDShield::autoscroll(void) {
   _displaymode |= LCD_ENTRYSHIFTINCREMENT;
   command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // This will 'left justify' text from the cursor
-void Adafruit_RGBLCDShield::noAutoscroll(void) {
+void SunFounder_RGBLCDShield::noAutoscroll(void) {
   _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
   command(LCD_ENTRYMODESET | _displaymode);
 }
 
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
-void Adafruit_RGBLCDShield::createChar(uint8_t location, uint8_t charmap[]) {
+void SunFounder_RGBLCDShield::createChar(uint8_t location, uint8_t charmap[]) {
   location &= 0x7; // we only have 8 locations 0-7
   command(LCD_SETCGRAMADDR | (location << 3));
   for (int i=0; i<8; i++) {
@@ -309,17 +320,17 @@ void Adafruit_RGBLCDShield::createChar(uint8_t location, uint8_t charmap[]) {
 
 /*********** mid level commands, for sending data/cmds */
 
-inline void Adafruit_RGBLCDShield::command(uint8_t value) {
+inline void SunFounder_RGBLCDShield::command(uint8_t value) {
   send(value, LOW);
 }
 
 #if ARDUINO >= 100
-inline size_t Adafruit_RGBLCDShield::write(uint8_t value) {
+inline size_t SunFounder_RGBLCDShield::write(uint8_t value) {
   send(value, HIGH);
   return 1;
 }
 #else
-inline void Adafruit_RGBLCDShield::write(uint8_t value) {
+inline void SunFounder_RGBLCDShield::write(uint8_t value) {
   send(value, HIGH);
 }
 #endif
@@ -327,7 +338,7 @@ inline void Adafruit_RGBLCDShield::write(uint8_t value) {
 /************ low level data pushing commands **********/
 
 // little wrapper for i/o writes
-void  Adafruit_RGBLCDShield::_digitalWrite(uint8_t p, uint8_t d) {
+void  SunFounder_RGBLCDShield::_digitalWrite(uint8_t p, uint8_t d) {
   if (_i2cAddr != 255) {
     // an i2c command
     _i2c.digitalWrite(p, d);
@@ -338,15 +349,19 @@ void  Adafruit_RGBLCDShield::_digitalWrite(uint8_t p, uint8_t d) {
 }
 
 // Allows to set the backlight, if the LCD backpack is used
-void Adafruit_RGBLCDShield::setBacklight(uint8_t status) {
-  // check if i2c or SPI
+void SunFounder_RGBLCDShield::setBacklight(uint8_t status) {
+  _i2c.digitalWrite(5, ~status);
+}
+
+// Allows to set the backlight, if the LCD backpack is used
+void SunFounder_RGBLCDShield::setRGBLedColour(uint8_t status) {
   _i2c.digitalWrite(8, ~(status >> 2) & 0x1);
   _i2c.digitalWrite(7, ~(status >> 1) & 0x1);
   _i2c.digitalWrite(6, ~status & 0x1);
 }
 
 // little wrapper for i/o directions
-void  Adafruit_RGBLCDShield::_pinMode(uint8_t p, uint8_t d) {
+void  SunFounder_RGBLCDShield::_pinMode(uint8_t p, uint8_t d) {
   if (_i2cAddr != 255) {
     // an i2c command
     _i2c.pinMode(p, d);
@@ -357,7 +372,7 @@ void  Adafruit_RGBLCDShield::_pinMode(uint8_t p, uint8_t d) {
 }
 
 // write either command or data, with automatic 4/8-bit selection
-void Adafruit_RGBLCDShield::send(uint8_t value, uint8_t mode) {
+void SunFounder_RGBLCDShield::send(uint8_t value, uint8_t mode) {
   _digitalWrite(_rs_pin, mode);
 
   // if there is a RW pin indicated, set it low to Write
@@ -373,7 +388,7 @@ void Adafruit_RGBLCDShield::send(uint8_t value, uint8_t mode) {
   }
 }
 
-void Adafruit_RGBLCDShield::pulseEnable(void) {
+void SunFounder_RGBLCDShield::pulseEnable(void) {
   _digitalWrite(_enable_pin, LOW);
   delayMicroseconds(1);    
   _digitalWrite(_enable_pin, HIGH);
@@ -382,7 +397,7 @@ void Adafruit_RGBLCDShield::pulseEnable(void) {
   delayMicroseconds(100);   // commands need > 37us to settle
 }
 
-void Adafruit_RGBLCDShield::write4bits(uint8_t value) {
+void SunFounder_RGBLCDShield::write4bits(uint8_t value) {
   if (_i2cAddr != 255) {
     uint16_t out = 0;
 
@@ -417,7 +432,7 @@ void Adafruit_RGBLCDShield::write4bits(uint8_t value) {
   }
 }
 
-void Adafruit_RGBLCDShield::write8bits(uint8_t value) {
+void SunFounder_RGBLCDShield::write8bits(uint8_t value) {
   for (int i = 0; i < 8; i++) {
     _pinMode(_data_pins[i], OUTPUT);
     _digitalWrite(_data_pins[i], (value >> i) & 0x01);
@@ -426,7 +441,7 @@ void Adafruit_RGBLCDShield::write8bits(uint8_t value) {
   pulseEnable();
 }
 
-uint8_t Adafruit_RGBLCDShield::readButtons(void) {
+uint8_t SunFounder_RGBLCDShield::readButtons(void) {
   uint8_t reply = 0x1F;
 
   for (uint8_t i=0; i<5; i++) {

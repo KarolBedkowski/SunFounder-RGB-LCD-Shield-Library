@@ -1,20 +1,20 @@
-/*************************************************** 
-  This is a library for the Adafruit RGB 16x2 LCD Shield 
+/***************************************************
+  This is a library for the Adafruit RGB 16x2 LCD Shield
   Pick one up at the Adafruit shop!
   ---------> http://http://www.adafruit.com/products/714
 
-  The shield uses I2C to communicate, 2 pins are required to  
+  The shield uses I2C to communicate, 2 pins are required to
   interface
-  Adafruit invests time and resources providing this open source code, 
-  please support Adafruit and open-source hardware by purchasing 
+  Adafruit invests time and resources providing this open source code,
+  please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
 
-  Written by Limor Fried/Ladyada for Adafruit Industries.  
+  Written by Limor Fried/Ladyada for Adafruit Industries.
   BSD license, all text above must be included in any redistribution
  ****************************************************/
 
-#ifndef Adafruit_RGBLCDShield_h
-#define Adafruit_RGBLCDShield_h
+#ifndef SunFounder_RGBLCDShield_h
+#define SunFounder_RGBLCDShield_h
 
 #include <inttypes.h>
 #include "Print.h"
@@ -65,14 +65,14 @@
 #define BUTTON_SELECT 0x01
 
 
-class Adafruit_RGBLCDShield : public Print {
+class SunFounder_RGBLCDShield : public Print {
 public:
-  Adafruit_RGBLCDShield();
+  SunFounder_RGBLCDShield();
 
   void init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
 	    uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
 	    uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7);
-    
+
   void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
   void clear();
@@ -90,12 +90,13 @@ public:
   void rightToLeft();
   void autoscroll();
   void noAutoscroll();
-  
+
   // only if using backpack
-  void setBacklight(uint8_t status); 
+  void setBacklight(uint8_t status);
+  void setRGBLedColour(uint8_t status);
 
   void createChar(uint8_t, uint8_t[]);
-  void setCursor(uint8_t, uint8_t); 
+  void setCursor(uint8_t, uint8_t);
 #if ARDUINO >= 100
   virtual size_t write(uint8_t);
 #else

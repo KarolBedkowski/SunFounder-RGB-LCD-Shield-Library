@@ -1,4 +1,10 @@
-This is a library for the Adafruit RGB 16x2 LCD Shield 
+This is a library for the SunFounder LCD KeyPad Shield with RGB Led.
+(monochrome LCD, 16x2, 5 buttons keypad and RGB led, I2C interface).
+
+
+Based on:
+
+Adafruit RGB 16x2 LCD Shield 
 
 Pick one up at the Adafruit shop!
   ---------> http://http://www.adafruit.com/products/714
@@ -16,7 +22,3 @@ products from Adafruit!
 Written by Limor Fried/Ladyada  for Adafruit Industries.  
 BSD license, check license.txt for more information
 All text above must be included in any redistribution
-
-To download. click the DOWNLOADS button in the top right corner, rename the uncompressed folder Adafruit_RGBLCDShield. Check that the Adafruit_RGBLCDShield folder contains Adafruit_RGBLCDShield.cpp and Adafruit_RGBLCDShield.h
-
-Place the Adafruit_RGBLCDShield library folder your <arduinosketchfolder>/libraries/ folder. You may need to create the libraries subfolder if its your first library. Restart the IDE.
